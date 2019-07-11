@@ -118,6 +118,8 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
         return magnitudeFormat.format(magnitude)
     }
 
+    //Open the browser to the map for each earthquake
+
     fun openNewTabWindow(urls: String, context : Context) {
         val uris = Uri.parse(urls)
         val intents = Intent(Intent.ACTION_VIEW, uris)

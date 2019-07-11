@@ -50,7 +50,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/textColorEarthquakeLocation"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="Long placeholder location that should wrap to more than 2 lines of text" />
 
     </LinearLayout>

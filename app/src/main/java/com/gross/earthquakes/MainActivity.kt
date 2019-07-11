@@ -9,17 +9,16 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import android.widget.ListView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.BasicNetwork
-import com.android.volley.toolbox.DiskBasedCache
-import com.android.volley.toolbox.HurlStack
-import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
@@ -43,12 +42,13 @@ class MainActivity : AppCompatActivity() {
             // Update the UI
             updateUI(data)
 
-
         }
 
     }
 
     fun fetchDatafromInternet(){
+
+
 
         // Instantiate the cache
         val cache = DiskBasedCache(cacheDir, 1024 * 1024) // 1MB cap
@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             start()
         }
 
+
         val url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
 
 // Formulate the request and handle the response.
@@ -68,7 +69,11 @@ class MainActivity : AppCompatActivity() {
             Request.Method.GET, url,
             Response.Listener<String> { response ->
                 liveData.postValue(response)
-                println(response)
+                requestQueue.stop()
+                var progressBar = ProgressBar(this)
+                progressBar = findViewById(R.id.progressBar)
+                progressBar.visibility = View.GONE
+
             },
             Response.ErrorListener { error ->
                 // Handle error
