@@ -1,39 +1,46 @@
 package com.gross.earthquakes
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.*
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.messaging.FirebaseMessaging
+import com.android.volley.toolbox.BasicNetwork
+import com.android.volley.toolbox.DiskBasedCache
+import com.android.volley.toolbox.HurlStack
+import com.android.volley.toolbox.StringRequest
 
 
 class MainActivity : AppCompatActivity() {
 
-     val liveData =  MutableLiveData<String>()
+     private val liveData =  MutableLiveData<String>()
+     private val TAG = "MainActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Adding refresh Swipe
+        var mySwipeRefreshLayout = SwipeRefreshLayout(this)
+        mySwipeRefreshLayout = findViewById(R.id.refreshLayout)
 
+        /*
+        * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
+        * performs a swipe-to-refresh gesture.
+        */
+        mySwipeRefreshLayout.setOnRefreshListener{
+            Log.i(TAG, "onRefresh called from SwipeRefreshLayout")
+            //Check if new data available if it is download it and present it to the user
+            fetchDatafromInternet()
+            //Clearning the indicator after fetch new data from the internet
+            mySwipeRefreshLayout.isRefreshing = false
+        }
         //Fetching data from internet
         fetchDatafromInternet()
 
@@ -46,10 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun fetchDatafromInternet(){
-
-
-
+    private fun fetchDatafromInternet(){
         // Instantiate the cache
         val cache = DiskBasedCache(cacheDir, 1024 * 1024) // 1MB cap
 
@@ -86,15 +90,18 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun updateUI(data : String){
+    private fun updateUI(data : String){
 
         val util = Util()
         //Getting array with all the earthquakes data
         val arrayEarthquakes = util.parseJson(data)
         val  earthquakeAdapter = EarthquakeAdapter(this, arrayEarthquakes as List<Earthquake>)
 
-        val  earthquakeListView = findViewById(R.id.list) as ListView
+        val  earthquakeListView = findViewById<ListView>(R.id.list)
 
         earthquakeListView.adapter = earthquakeAdapter
     }
+
+
+
 }

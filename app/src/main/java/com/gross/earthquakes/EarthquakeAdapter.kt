@@ -2,8 +2,10 @@ package com.gross.earthquakes
 
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
+import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +13,13 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import androidx.core.content.ContextCompat.startActivity
+import kotlin.math.floor
 
 
-
-
-class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthquake>) : ArrayAdapter<Earthquake>(context, 0, mEarthquakes) {
+class EarthquakeAdapter(context: Context, private var mEarthquakes: List<Earthquake>) : ArrayAdapter<Earthquake>(context, 0, mEarthquakes) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
@@ -63,7 +59,6 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
         val date = calendar.time
 
         val tvDate = view.findViewById(R.id.date_text_view) as TextView
-        Log.d("EarthquakeAdapter","The format date: ".plus(formatDate(date)))
         tvDate.text = formatDate(date)
 
         val tvTime = view.findViewById(R.id.time_text_view) as TextView
@@ -73,7 +68,7 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
         return view
     }
 
-    fun formatTime(date: Date): String {
+    private fun formatTime(date: Date): String {
         val dateFormat = SimpleDateFormat("h: mm a", Locale("us"))
         return dateFormat.format(date)
     }
@@ -85,30 +80,28 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
 
     private fun split(string: String): Array<String> {
         var array = arrayOf<String>()
-        if (string.contains("of")) {
-            array = string.split("of".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-            return array
+        return if (string.contains("of")) {
+            array = string.split("of".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            array
         } else {
             array = arrayOf("Near", string)
-            return array
+            array
         }
     }
 
     private fun getMagnitudeColor(magnitude: Double): Int {
 
-        val magnitudeColorResourceId: Int
-        val magnitudeFloor = Math.floor(magnitude).toInt()
-        when (magnitudeFloor) {
-            0, 1 -> magnitudeColorResourceId = R.color.magnitude1
-            2 -> magnitudeColorResourceId = R.color.magnitude2
-            3 -> magnitudeColorResourceId = R.color.magnitude3
-            4 -> magnitudeColorResourceId = R.color.magnitude4
-            5 -> magnitudeColorResourceId = R.color.magnitude5
-            6 -> magnitudeColorResourceId = R.color.magnitude6
-            7 -> magnitudeColorResourceId = R.color.magnitude7
-            8 -> magnitudeColorResourceId = R.color.magnitude8
-            9 -> magnitudeColorResourceId = R.color.magnitude9
-            else -> magnitudeColorResourceId = R.color.magnitude10plus
+        val magnitudeColorResourceId: Int = when (floor(magnitude).toInt()) {
+            0, 1 -> R.color.magnitude1
+            2 -> R.color.magnitude2
+            3 -> R.color.magnitude3
+            4 -> R.color.magnitude4
+            5 -> R.color.magnitude5
+            6 -> R.color.magnitude6
+            7 -> R.color.magnitude7
+            8 -> R.color.magnitude8
+            9 -> R.color.magnitude9
+            else -> R.color.magnitude10plus
         }
         return ContextCompat.getColor(context, magnitudeColorResourceId)
     }
@@ -120,7 +113,7 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
 
     //Open the browser to the map for each earthquake
 
-    fun openNewTabWindow(urls: String, context : Context) {
+    private fun openNewTabWindow(urls: String, context : Context) {
         val uris = Uri.parse(urls)
         val intents = Intent(Intent.ACTION_VIEW, uris)
         val b = Bundle()

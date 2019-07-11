@@ -17,12 +17,13 @@ class Util {
         val times = node.findValues("time")
         val urls = node.findValues("url")
 
-        for (index in 0..magnitudes.size -1){
+        for (index in 0 until magnitudes.size){
 
             earthquakes.add(index,
-                Earthquake(magnitudes.get(index).asDouble(),
-                    places.get(index).asText(),urls.get(index +1).asText().plus("/map"),
-                    times.get(index).asLong()))
+                Earthquake(
+                    magnitudes[index].asDouble(),
+                    places[index].asText(), urls[index +1].asText().plus("/map"),
+                    times[index].asLong()))
         }
         return  earthquakes
     }
