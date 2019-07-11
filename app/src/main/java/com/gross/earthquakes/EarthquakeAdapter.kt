@@ -3,6 +3,7 @@ package com.gross.earthquakes
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import androidx.core.content.ContextCompat
 
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 
 class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthquake>) : ArrayAdapter<Earthquake>(context, 0, mEarthquakes) {
@@ -40,11 +41,14 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
         tvPlace.text = fullLocation[1]
 
         val tvOffset = view.findViewById(R.id.offset_text_view) as TextView
-        tvOffset.text = fullLocation[0] + " of"
+        tvOffset.text = fullLocation[0].plus(" of")
 
-        val date = Date(current.timeInMilliSeconds)
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = current.timeInMilliSeconds
+        val date = calendar.time
 
         val tvDate = view.findViewById(R.id.date_text_view) as TextView
+        Log.d("EarthquakeAdapter","The format date: ".plus(formatDate(date)))
         tvDate.text = formatDate(date)
 
         val tvTime = view.findViewById(R.id.time_text_view) as TextView
@@ -55,12 +59,12 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
     }
 
     fun formatTime(date: Date): String {
-        val dateFormat = SimpleDateFormat("h: mm a")
+        val dateFormat = SimpleDateFormat("h: mm a", Locale("us"))
         return dateFormat.format(date)
     }
 
     private fun formatDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("MM DD, yyyy")
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("us"))
         return dateFormat.format(date)
     }
 

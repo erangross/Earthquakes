@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
@@ -38,10 +39,9 @@ class MainActivity : AppCompatActivity() {
         fetchDatafromInternet()
 
         liveData.observeForever { data ->
-            // Update the UI
 
-            val util = Util()
-            util.parseJson(data)
+            // Update the UI
+            updateUI(data)
 
 
         }
@@ -78,5 +78,18 @@ class MainActivity : AppCompatActivity() {
 // Add the request to the RequestQueue.
         requestQueue.add(stringRequest)
 
+    }
+
+
+    fun updateUI(data : String){
+
+        val util = Util()
+        //Getting array with all the earthquakes data
+        val arrayEarthquakes = util.parseJson(data)
+        val  earthquakeAdapter = EarthquakeAdapter(this, arrayEarthquakes as List<Earthquake>)
+
+        val  earthquakeListView = findViewById(R.id.list) as ListView
+
+        earthquakeListView.adapter = earthquakeAdapter
     }
 }
