@@ -8,12 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.core.content.ContextCompat.startActivity
+
+
 
 
 class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthquake>) : ArrayAdapter<Earthquake>(context, 0, mEarthquakes) {
@@ -27,6 +34,14 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
             view = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
         }
 
+        var urlClick = LinearLayout(context)
+        if (view != null) {
+            urlClick = view.findViewById(R.id.cellClick)
+            urlClick.setOnClickListener{
+                openNewTabWindow(current.url,context)
+
+            }
+        }
 
         val tvMag = view!!.findViewById(R.id.mag_text_view) as TextView
         tvMag.text = formatMagnitude(current.magnitude)
@@ -101,5 +116,14 @@ class EarthquakeAdapter(context: Context, internal var mEarthquakes: List<Earthq
     private fun formatMagnitude(magnitude: Double): String {
         val magnitudeFormat = DecimalFormat("0.0")
         return magnitudeFormat.format(magnitude)
+    }
+
+    fun openNewTabWindow(urls: String, context : Context) {
+        val uris = Uri.parse(urls)
+        val intents = Intent(Intent.ACTION_VIEW, uris)
+        val b = Bundle()
+        b.putBoolean("new_window", true)
+        intents.putExtras(b)
+        context.startActivity(intents)
     }
 }
