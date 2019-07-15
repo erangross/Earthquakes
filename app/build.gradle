@@ -12,8 +12,8 @@ android {
         applicationId "com.gross.earthquakes"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 2
-        versionName "2.0"
+        versionCode 4
+        versionName "4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -47,5 +47,5 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.9'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.9'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9.1'
 }
