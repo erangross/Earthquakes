@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.android.volley.Cache
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         val network = BasicNetwork(HurlStack())
 
 // Instantiate the RequestQueue with the cache and network. Start the queue.
-        val requestQueue = RequestQueue(cache, network).apply {
+        val requestQueue = RequestQueue(cache as Cache?, network).apply {
             start()
         }
 
