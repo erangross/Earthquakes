@@ -1,6 +1,11 @@
 package com.gross.earthquakes
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.ListView
@@ -15,13 +20,15 @@ import com.android.volley.toolbox.BasicNetwork
 import com.android.volley.toolbox.DiskBasedCache
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.StringRequest
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
 
      private val liveData =  MutableLiveData<String>()
      private val TAG = "MainActivity"
-
+    lateinit private var serviceComponent: ComponentName
+    private var jobId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         //Adding refresh Swipe
         var mySwipeRefreshLayout = SwipeRefreshLayout(this)
         mySwipeRefreshLayout = findViewById(R.id.refreshLayout)
+        serviceComponent = ComponentName(this, MyJobService::class.java)
+
 
         /*
         * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
@@ -50,6 +59,8 @@ class MainActivity : AppCompatActivity() {
             updateUI(data)
 
         }
+                //Schedual job will run in the background even if the app closed
+                 scheduleJob()
 
     }
 
@@ -66,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
+        val url = getString(R.string.url)
 
 // Formulate the request and handle the response.
         val stringRequest = StringRequest(
@@ -103,5 +114,23 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun scheduleJob() {
+        val builder = JobInfo.Builder(jobId++, serviceComponent)
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            builder.setPeriodic(TimeUnit.MINUTES.toMillis(1))
+
+        // Extras, work duration.
+        val extras = PersistableBundle()
+        var workDuration = "1"
+        extras.putLong(WORK_DURATION_KEY, workDuration.toLong() * TimeUnit.SECONDS.toMillis(1))
+        // Finish configuring the builder
+        builder.run {
+            setExtras(extras)
+        }
+
+        // Schedule job
+        Log.d(TAG, "Scheduling job")
+        (getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler).schedule(builder.build())
+    }
 
 }

@@ -21,5 +21,6 @@
         It should describe the category of notifications that will be sent through this channel
      -->
     <string name="mag_size">5</string>
+    <string name="url">https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson</string>
 
 </resources>
