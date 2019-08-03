@@ -12,8 +12,8 @@ android {
         applicationId "com.gross.earthquakes"
         minSdkVersion 27
         targetSdkVersion 29
-        versionCode 5
-        versionName "5"
+        versionCode 6
+        versionName "6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -38,7 +38,6 @@ dependencies {
     implementation 'androidx.core:core:1.0.2'
     implementation 'android.arch.work:work-runtime:1.0.1'
 
-    implementation 'com.google.firebase:firebase-messaging:19.0.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

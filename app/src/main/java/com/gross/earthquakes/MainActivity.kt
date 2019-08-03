@@ -26,9 +26,9 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-     private val liveData =  MutableLiveData<String>()
-     private val TAG = "MainActivity"
-    lateinit private var serviceComponent: ComponentName
+    private val liveData =  MutableLiveData<String>()
+    private val TAG = "MainActivity"
+    private lateinit var serviceComponent: ComponentName
     private var jobId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
         // Extras, work duration.
         val extras = PersistableBundle()
-        var workDuration = "1"
+        val workDuration = "1"
         extras.putLong(WORK_DURATION_KEY, workDuration.toLong() * TimeUnit.SECONDS.toMillis(1))
         // Finish configuring the builder
         builder.run {
